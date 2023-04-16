@@ -1,0 +1,13 @@
+
+<div class="sidebar">
+    <div class="sidebarImage">
+        <img src="/media/images/CS_Logo.png" class="sidebarLogo" />
+    </div>
+    <br />
+    <ul class="sidemenu">
+        <li {% if navbar == 'page1' %} class="sidebar-item-active" {% else %} class="sidebar-item" {% endif %}><a href="{% url 'Admin' %}">Home</a></li>
+        <li {% if navbar == 'page2' %} class="sidebar-item-active" {% else %} class="sidebar-item" {% endif %}><a href="{% url 'AddProduct' %}">Product</a></li>
+        <li {% if navbar == 'page3' %} class="sidebar-item-active" {% else %} class="sidebar-item" {% endif %}><a href="{% url 'Category' %}">Category</a></li>
+        <li {% if navbar == 'page4' %} class="sidebar-item-active" {% else %} class="sidebar-item" {% endif %}><a href="{% url 'AdminContact' %}">Contact Us</a></li>
+    </ul>
+</div>

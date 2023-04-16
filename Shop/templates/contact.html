@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Contact Us</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <div class="contact-title">Contact Us</div>
+
+        <div align=center class="align-container">
+            <div class="formContainer contact-container" align=center>
+
+                <div class="mainImage">
+                    <img src="/media/images/contact-us.jpg" />
+                </div>
+                <div class="mainForms centerForms">
+                    <form method="post"> {% csrf_token %}
+            
+                        <input type="text" class="Inputs contact-width" id="name" name="name" placeholder="Enter Name" required />
+                        <br />
+                        <br />
+                        <input type="email" class="Inputs contact-width" id="email" name="email" placeholder="Enter Email" required />
+                        <br />
+                        <br />
+                        <input type="number" class="Inputs contact-width" id="number" name="number" placeholder="Enter Number" required />
+                        <br />
+                        <br />
+                        <textarea id="message" class="Inputs contact-form-height" name="message" placeholder="Enter Message" required></textarea>
+                        <br />
+                        <br />
+                        <button type="submit" class="submitBtn contact-btn-width">Submit</button>
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% include 'footer.html' %}
+    </body>
+</html>

@@ -1,0 +1,113 @@
+{% comment %} {% for i in product %} {% endcomment %}
+    <div class="cart product_data">
+                        
+        <button type="button" id="{{i.0}}" class="like-btn" onclick="clickNew({{forloop.counter}})">
+            {% if i.0 == i.5 %}
+                <img src="/media/images/love.png" id="image{{forloop.counter}}" class="like-btn wishlist-btn" />
+            {% else %}
+                <img src="/media/images/heart.png" id="image{{forloop.counter}}" class="like-btn wishlist-btn" />
+            {% endif %}
+        </button>
+    
+        <a href="../details/{{i.0}}">
+        <div class="cartImage">
+            <img src="/media/images/{{i.4}}" />   
+        </div>
+        <div class="cartTitle">
+            {% comment %} <b> {{forloop.counter}} {{i.1}} </b> {% endcomment %}
+        <b>{{i.1|truncatechars:22}} </b>
+        </div>
+        <p class="cart-description">
+                        
+            {{i.2|truncatechars:30}}
+                            
+        </p></a>
+        <br />
+                    
+        {% csrf_token %}
+
+        <input type="hidden" value="{{i.0}}" class="product_id" />
+        <button type="submit" class="view-cart addToCartBtn"> Add To.. 
+            <img src="/media/images/add-to-cart.png" class="add-to-img" />
+        </button>
+
+        &nbsp;&nbsp;&nbsp;
+
+        <input type="submit" class="cart-price" onlick="addToCart();" value="₹ {{i.3}}">
+                
+    </div>
+                
+{% comment %} {% endfor %} {% endcomment %}
+
+<script type="text/javascript">
+
+    var likes = 1;
+
+    function clickNew(id) {
+        var image = document.getElementById('image' + id);
+    
+        if (image.src.match("/media/images/love")) {
+            image.src = "/media/images/heart.png";
+            likes = 1;
+    
+        }
+        else {
+            image.src = "/media/images/love.png";
+            likes = 0;
+        }
+    }
+    
+    
+    $('.addToCartBtn').click(function (e) {
+        e.preventDefault();
+    
+        var product_id = $(this).closest('.product_data').find('.product_id').val();
+    
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+    
+        /*$('button.view-cart').text(product_id); */
+    
+        $.ajax({
+    
+            method: "POST",
+            /*url: "product",*/
+            data: {
+                'product_id': product_id,
+                csrfmiddlewaretoken: token,
+                'addCart': 'cart'
+            },
+            dataType: "dataType"
+            /*success: function (response){
+    
+            }*/
+    
+        });
+    
+    });
+    
+    $('.wishlist-btn').click(function (e) {
+        e.preventDefault();
+    
+        var product_id = $(this).closest('.product_data').find('.product_id').val();
+    
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+    
+        /*$('button.view-cart').text(product_id); */
+    
+        $.ajax({
+    
+            method: "POST",
+            data: {
+                'product_id': product_id,
+                'like': likes,
+                csrfmiddlewaretoken: token,
+                'addWish': 'wishes'
+    
+            },
+            dataType: "dataType"
+    
+        });
+    
+    });
+
+</script>

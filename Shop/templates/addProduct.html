@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <title>Add Product</title>
+        <link rel="stylesheet" href="/static/main.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+        {% comment %} imale uplod script  {% endcomment %}
+
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.2/dist/jquery.min.js"></script>
+
+    </head>
+    <body>
+
+        <div class="main-page">
+            {% include 'adminSidebar.html' %}
+            <div class="page">
+                {% include 'adminMenu.html' %}
+                <div class="containt">
+
+                    <form method="post" enctype="multipart/form-data"> {% csrf_token %}
+
+                        <br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>Product Name</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="Inputs" id="name" name="name" placeholder="Product name"  />
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <label>Product Price</label>&nbsp;&nbsp;&nbsp;
+                        <input type="number" class="Inputs" id="price" name="price" placeholder="Product price"  />
+                        <br />
+                        <br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>Company Name</label>&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="Inputs" id="company" name="company" placeholder="Product company name"  />
+
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        
+                        <label>Category</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        
+                        <select class="Inputs" id="option" name="option" >
+
+                            <option>--Select--</option>
+
+                            {% for i in options %}
+
+                            <option>{{i.1}}</option>
+
+                            {% endfor %}
+
+                        </select>
+
+                        <br />
+                        <br />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <label>Quantity</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="Inputs" id="quantity" name="quantity" placeholder="Quantity"  />
+                        
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                        <label>Model</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="Inputs" id="model" name="model" placeholder="Model"  />
+                        
+
+                        <br />
+
+                        <br />
+                        <label class="form-label">Description</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
+                        <textarea type="text" class="description" id="description" name="description" placeholder="Description" ></textarea>
+
+                        <label>Display Size</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="text" class="Inputs" id="size" name="size" placeholder="Display size"  /> 
+
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+
+                        <label class="form-label">Chooze images</label>                        
+                        <div id="wrapper" style="margin-top: 20px;"><input id="fileUpload" name="files[]" multiple="multiple" type="file" data-max_length="5" /> 
+                        <div class="image-upload-container">
+                            <div id="image-holder"></div>
+                        </div>
+
+                        <br />
+                        <br />
+                        <br />
+                        <div align="center" id="msg">{{message}}</div>
+                        <br />
+                        <input type="submit" id="uploads" class="submitBtn-center" value="Submit" />
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+
+<script>
+  $(document).ready(function() {
+    $("#fileUpload").on('change', function() {
+      //Get count of selected files
+      var countFiles = $(this)[0].files.length;
+      var imgPath = $(this)[0].value;
+      var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+      var image_holder = $("#image-holder");
+      image_holder.empty();
+      if (extn == "gif" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+        if (typeof(FileReader) != "undefined") {
+          //loop for each file selected for uploaded.
+          for (var i = 0; i < countFiles; i++) 
+          {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+              $("<img />", {
+                "src": e.target.result,
+                "class": "thumb-image"
+              }).appendTo(image_holder);
+            }
+            image_holder.show();
+            reader.readAsDataURL($(this)[0].files[i]);
+          }
+        } else {
+          alert("This browser does not support FileReader.");
+        }
+      } else {
+        alert("Pls select only images");
+      }
+    });
+  });
+
+  $(document).ready(function (e) {
+    $('#uploads').on('click', function () {
+      var form_data = new FormData();
+      var ins = document.getElementById('fileUpload').files.length;
+
+      /*if(ins == 0){
+        $('#msg').html('<div>Select images</div>');
+        return;
+      }*/
+
+      for (var x = 0; x < ins; x++){
+        form_data.append("files[]", document.getElementById('fileUpload').files[x]);
+      }
+
+      csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+
+      form_data.append("csrfmiddlewaretoken", csrf_token);
+
+
+      $.ajax({
+
+        url: 'images',
+        dataType: 'json',
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: form_data,
+        type: 'post',
+
+        success: function (response) {
+          $('#msg').html(response.msg);
+        },
+        error: function (response) {
+          $('#msg').html(response.message);
+        }
+
+      });
+
+    });
+  });
+    
+</script>

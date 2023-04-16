@@ -1,0 +1,51 @@
+<html>
+    <head>
+        <title>Login Page</title>
+        <link rel="stylesheet" href="/static/main.css" />
+    </head>
+    <body class="themeColor centerForms">
+
+        <div class="formContainer loginContainer" align=center>
+
+            <div class="mainImage centerForms">
+                <img src="/media/images/sign-in.jpg" />
+            </div>
+            <div class="mainForms centerForms">
+                <form method="post"> {% csrf_token %}
+                    
+                    <div class="formTitle">Sign In</div>
+                    <br />
+                    <br />
+                    <div class="formText">Enter your details below to sign in</div>
+                    <br />
+                    
+                    <input type="email" class="Inputs emailInput" id="email" name="email" placeholder="Enter email" required />
+                    <br />
+                    <br />
+                    <input type="password" class="Inputs passwordInput passwordShowHide" id="password" name="password" placeholder="Enter password" required />
+                    <br />
+                    <br />
+                    <button type="submit" class="submitBtn">Sign In</button>
+                    <br />
+                    <br />
+                    <div>
+                        <a href="{% url 'Forgot' %}" class="actionLink">Forgot password</a>
+                    </div>
+                    <br />
+                    <br />
+                    <div>
+                        <span class="actionLink">Don't have account?</span>
+                        <a href="{% url 'Registration' %}" class="actionLink">Sign Up</a>
+                    </div>
+                    <br />
+                    {% if message != '' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>

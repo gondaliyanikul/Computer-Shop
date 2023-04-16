@@ -1,0 +1,195 @@
+<html>
+    <head>
+        <title>My Cart</title>
+        <link rel="stylesheet" href="/static/main.css" />
+        <script src="/static/jquery.js"></script>
+        
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <br />
+
+        <div>
+
+            <div class="cart-container-table">
+
+                {% if products %}
+
+                <table class="cart-table">
+                    <tr class="cart-table-heading">
+                        <th>Product</th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for i in products %}
+                    <tr class="cart-data">
+                        <td><img src="/media/images/{{i.4}}" width="100" height="100" class="cart-table-width" /></td>
+                        <td>{{i.1}}</td>
+                        <td align=center><div class="count-btn" id="{forloop.counter}" onclick="{{request.get_full_path}}">
+
+                            <button class="plus-btn" id="increment"  onclick="increment({{forloop.counter}});">+</button>
+
+                            <input type="hidden" class="product_id" value="{{i.0}}" />
+
+                            <input type="number" class="count-number" id="QtyInput{{forloop.counter}}" value="{{i.2}}" min=0 readonly />
+                                
+                            <button class="minus-btn" id="decrement" onclick="decrement({{forloop.counter}});">-</button>
+
+                        </div></td>
+
+                        {% csrf_token %}
+
+                        <input type="hidden" value="{{i.0}}" class="product_id" />
+                        
+                        <td class="row-sum">₹ {{i.3}}</td>
+                        <td class="total-col-sum">₹ {% widthratio i.2 1 i.3 %}</td>
+                        <td><input type="button" value="Remove" id="delete" class="delete-btn" onclick="info();" /></td>
+
+                    </tr>
+                    {% endfor %}
+                     <tr>
+                        
+                        <td colspan=4>Total Price:</td>
+                        <td class="totalPrice">$ {{sumQty}}</td>
+                    </tr>
+                </table>
+                <div class="ckeckout-btn-box">
+                    <input type="submit" class="ckeckout-btn" onclick="location.href='/cart/checkout'" value="Checkout" />
+                </div>
+                {% else %}
+
+                <div class="notFoundProduct">
+                    <img src="/media/images/emptycart.png" width="700" height="700" />
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <br />
+
+        {% include 'footer.html' %}
+
+    </body>
+
+</html>
+
+
+<script>
+
+    function info(){
+        alert('Are you sure want to deltete');
+    }
+
+
+    function increment(id) {
+        document.getElementById('QtyInput'+id).stepUp();
+
+    }
+    function decrement(id) {
+        document.getElementById('QtyInput'+id).stepDown();
+    }
+
+    const plus = document.querySelector(".plus-btn"),
+    minus = document.querySelector(".minus-btn"),
+    num = document.querySelector(".count-number");
+
+    let a = 0;
+
+    plus.addEventListener("click", ()=>{
+        a++;
+        
+        a = (a < 10)? "0" + a : a;
+        
+        num.innerText = a;
+
+    });
+
+    minus.addEventListener("click", ()=>{
+        
+        if (a > 0){
+            a--;
+
+            a = (a < 10)? "0" + a : a;
+        
+            num.innerText = a;
+
+        }
+        
+    });
+
+    $('.delete-btn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.cart-data').find('.product_id').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        /*$('delete-btn').text(product_id); */
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'product_id': product_id,
+                csrfmiddlewaretoken: token,
+                'addCart': 'cart'
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+    $('.plus-btn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.count-btn').find('.product_id').val();
+        var quantity = $(this).closest('.count-btn').find('.count-number').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'increment_productId': product_id,
+                'incrementQuantity': quantity,
+                csrfmiddlewaretoken: token,
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+    $('.minus-btn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.count-btn').find('.product_id').val();
+        var quantity = $(this).closest('.count-btn').find('.count-number').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'decrement_productId': product_id,
+                'decrementQuantity': quantity,
+                csrfmiddlewaretoken: token,
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+</script>

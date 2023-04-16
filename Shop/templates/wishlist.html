@@ -1,0 +1,90 @@
+<html>
+    <head>
+        <title>My Cart</title>
+        <link rel="stylesheet" href="/static/main.css" />
+    </head>
+    <body>
+
+        {% include 'header.html' %}
+
+        <br />
+
+        <div>
+
+            <div class="cart-container-table">
+
+            {% if wishes %}
+
+                <table class="cart-table">
+                    <tr class="cart-table-heading">
+                        <th>Product</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for i in wishes %}
+                    <tr class="cart-data">
+                        <td><img src="/media/images/{{i.3}}" class="cart-table-width" /></td>
+                        <td>{{i.1}}</td>
+                        <td>₹ {{i.2}}</td>
+                        {% csrf_token %}
+                        <input type="hidden" value="{{i.0}}" class="product_id" />
+                        <td><input type="button" value="Remove" class="delete-btn" onclick="info();" /></td>
+
+                    </tr>
+                    {% endfor %}
+    
+                </table>
+            {% else %}  
+                
+            <div class="notFoundProduct">
+                <img src="/media/images/nowhishlist.jpg" width="700" height="700" />
+            </div>
+    
+            {% endif %}
+
+
+            </div>
+
+        </div>
+
+        <br />
+
+        {% include 'footer.html' %}
+
+    </body>
+
+</html>
+
+<script type="text/javascript">
+
+    function info(){
+
+        alert('Are you sure want to delete');
+
+    }
+
+    $('.delete-btn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.cart-data').find('.product_id').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        /*$('delete-btn').text(product_id); */
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'product_id': product_id,
+                csrfmiddlewaretoken: token,
+                'addCart': 'cart'
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+</script>

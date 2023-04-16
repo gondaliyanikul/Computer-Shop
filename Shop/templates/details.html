@@ -1,0 +1,273 @@
+<html>
+
+    <head>
+        <title>Product details</title>  
+        <link rel="stylesheet" href="/static/main.css" />
+        <script src="/static/scripting.js"></script>
+        
+    </head>
+    <body>
+
+        {% for i in product %}
+
+        <div class="main-page">
+
+            <div class="product-images">
+                <br /><br />
+
+                    <div class="product-main-image">
+                        <img src="/media/images/{{i.1}}" class="images" />
+                    </div>
+                    <br />
+                    <br />
+                    <div class="other-images">
+                        <img src="/media/images/{{i.2}}" class="other-image" />
+                        <img src="/media/images/{{i.3}}" class="other-image" />
+                        <img src="/media/images/{{i.4}}" class="other-image" />
+                    </div>
+                    {% if users != "" %}
+                    <input type="button" class="details-add-btn" value="ADD TO CART" />
+                    {% else %}
+                    <input type="button" class="details-add-btn" onclick="location.href='/login'" value="ADD TO CART" />
+                    {% endif %}
+
+                    {% if users != "" %}
+                    <input type="button" class="details-buy-btn" value="BUY NOW" />
+                    {% else %}
+                    <input type="button" class="details-buy-btn" onclick="location.href='/login'" value="BUY NOW" />
+                    {% endif %}
+            </div>
+
+            <div class="product-details">
+
+                <b class="details-heading">{{i.5}}</b>
+
+                <br />
+
+                <hr class="horizontal-line" />
+
+                <br />
+
+                <div class="details-content">
+                    <div class="details-product-details">
+
+                    <p class="categorys"><b>Category: </b>{{i.6}}</p>
+
+                    <p><b>Company Name: </b>{{i.7}}</p>
+
+                    <p><b>Model: </b>{{i.8}}</p>
+
+                    <p class="price"><b>Price: </b>₹ {{i.9}}</p>
+
+
+                    </div>
+                    
+                    <div class="details-select">
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+
+                    
+                        <div class="details-available"><b>Available</b></div>
+                        
+                    </div>
+
+                    
+                </div>
+                <br />
+
+                <hr class="horizontal-line" />
+
+                <br />
+                <p><b>Description</b></p>
+                <p>{{i.10}}</p>
+
+            </div>
+        
+        </div>
+
+        {% endfor %}
+
+        <div class="page-container" id="search">
+
+            <div class="cart-container">
+
+                {% for i in carts %}
+                    <div class="cart product_data">
+                        <div id="{{i.0}}" class="like-btn" onclick="clickNew({{forloop.counter}})">
+                            {% if users != '' %}
+                                {% if i.0 in wishlist_product %}
+                                <img width="30" height="30" src="/media/images/love.png" id="image{{forloop.counter}}" class="like-btn wishlist-btn" />
+                                {% else %}
+                                <img width="30" height="30" src="/media/images/heart.png" id="image{{forloop.counter}}" class="like-btn wishlist-btn" />
+                                {% endif %}
+                            {% else %}
+                            <img width="30" height="30" src="/media/images/heart.png" class="like-btn" onclick="location.href='/login'" />
+                            {% endif %}
+                        </div>
+                        
+                        <a href="../details/{{i.0}}">
+                        <div class="cartImage">
+                            <img src="/media/images/{{i.4}}" />   
+                        </div>
+                        <div class="cartTitle">
+                            <b>{{i.1|truncatechars:22}} </b>
+                        </div>
+                        <p class="cart-description">
+                            
+                            {{i.2|truncatechars:30}}
+                                
+                        </p></a>
+                        <br />
+                        
+                        <div class="details-buttons-container">
+                            {% csrf_token %}
+
+                            {% if users != '' %}
+                            <input type="submit" class="cart-price" onclick="addToCart();" value="₹ {{i.3}}">
+                            {% else %}
+                            <input type="submit" class="cart-price" onclick="location.href='/login'" value="₹ {{i.3}}">
+                            {% endif %}
+
+                            &nbsp;&nbsp;&nbsp;
+
+                            <input type="hidden" value="{{i.0}}" class="product_id" />
+                            {% if users != '' %}
+                            <button type="submit" id="hoverme" class="view-cart addToCartBtn"> Add To.. 
+                                <img src="/media/images/add-to-cart.png" class="add-to-img" />
+                            </button>
+                            {% else %}
+                            <button type="submit" id="hoverme" class="view-cart" onclick="location.href='/login'" > Add To.. 
+                                <img src="/media/images/add-to-cart.png" class="add-to-img" />
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+
+    </body>
+
+</html>
+
+
+<script type="text/javascript">
+    var likes = 1;
+
+    function clickNew(id) {
+        var image = document.getElementById('image'+id);
+    
+        if (image.src.match("/media/images/love")) {
+            image.src = "/media/images/heart.png";
+            likes = 1;
+            alert(like);
+        }
+        else {
+            image.src = "/media/images/love.png";
+            likes = 0;
+            alert(like);
+        }
+    }
+    
+
+    $('.addToCartBtn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.product_data').find('.product_id').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        /*$('button.view-cart').text(product_id); */
+
+        $.ajax({
+
+            method: "POST",
+            /*url: "product",*/
+            data: {
+                'product_id': product_id,
+                csrfmiddlewaretoken: token,
+                'addCart': 'cart'
+            },
+            dataType: "dataType"
+            /*success: function (response){
+
+            }*/
+
+        }); 
+
+    });
+
+    $('.wishlist-btn').click(function (e) {
+        e.preventDefault();
+
+        var product_id = $(this).closest('.product_data').find('.product_id').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        /*$('button.view-cart').text(product_id); */
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'product_id': product_id,
+                'like': likes,
+                csrfmiddlewaretoken: token,
+                'addWish': 'wishes'
+                
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+
+    $('.search-btn').click(function (e) {
+        e.preventDefault();
+
+        var result = $(this).closest('.page-container').find('.search-box').val();
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        $.ajax({
+
+            method: "POST",
+            data: {
+                'search': result,
+                csrfmiddlewaretoken: token
+                
+            },
+            dataType: "dataType"
+
+        }); 
+
+    });
+
+    $('.category-button').click(function (e) {
+        e.preventDefault();
+
+        var result = $(this).closest('.category-div').find('.categorys').val();
+
+        console.log(result);
+
+        var token = $('input[name=csrfmiddlewaretoken]').val();
+
+        $.ajax({
+
+            method: "GET",
+            data: {
+                'category': result,
+                csrfmiddlewaretoken: token
+                
+            },
+            dataType: "dataType"
+        }); 
+
+    });
+
+
+</script>

@@ -1,0 +1,102 @@
+<html>
+
+    <head>
+        <title>Admin Page</title>
+        <link rel="stylesheet" href="/static/main.css" />
+    </head>
+    <body>
+
+        <div class="main-page">
+            {% include 'adminSidebar.html' %}
+        
+            <div class="page">
+                {% include 'adminMenu.html' %}
+
+                <div class="containt">
+                    
+                    <input type="submit" class="add-item-btn" value="Add Caegory" onclick="location.href='#popup1'" />
+                   
+                    <form method="post"> {% csrf_token %}
+
+                        <div id="popup1" class="overlay">
+                            <div class="popup">
+                                <h2>Add Category</h2>
+                                <a class="close" href="#">&times;</a>
+                                <div class="content">
+                                    <input type="text" id="category" name="category" class="Inputs" placeholder="Add category" required />
+                                    
+                                    <input type="submit" value="Add" class="category-btn" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="main-table" id="table">
+                        <tr class="table-heading">
+                            <th class="tbl-head">Id</th>
+                            <th class="table-design tbl-head">Name</th>
+                            <th class="tbl-head">Edit</th>
+                            <th class="tbl-head">Delete</th>
+                        </tr>
+
+                        {% for i in category %}
+
+                        <tr class="table-data">
+                            <td id="categoryId" class="categoryId">{{i.0}}</td>
+                            <td>{{i.1}}</td>
+
+                            <form id="form1" method="post"> {% csrf_token %}
+
+                                <div id="popup2" class="overlay">
+                                    <div class="popup">
+                                        <h2>Add Category</h2>
+                                        <a class="close" href="#">&times;</a>
+                                        <div class="content">
+                                            <input type="hidden" class="cat-Id-Box" id="catId" name="catId" />
+                                            <input type="text" id="editCategory" name="editCategory" class="Inputs" placeholder="Edit category" required />
+                                            
+                                            <input type="submit" value="Edit" class="category-btn" />
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            {% csrf_token %}
+                            <td class="category-table-button-width"><input type="button" class="action-btn product-edit-btn" onclick="location.href='#popup2'" value="Edit" /></td>
+                            <td class="category-table-button-width"><input type="button" class="action-btn product-delete-btn" onclick=" info(); location.href='category/{{i.0}}'" value="Delete" /></td>
+                        
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>
+
+
+<script type="text/javascript">
+
+
+    function info(){
+
+        alert('Are you sure want to delete');
+
+    }
+
+    var table  = document.getElementById("table"),rIndex;
+
+    for (var i = 0; i < table.rows.length; i++){
+
+        table.rows[i].onclick = function () {
+            rIndex = this.rowIndex;
+
+            var celId = document.getElementById("catId").value = this.cells[0].innerHTML;
+            var celValue = document.getElementById("editCategory").value = this.cells[1].innerHTML;
+
+        };
+
+    }
+
+</script>

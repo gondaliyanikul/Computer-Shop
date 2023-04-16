@@ -1,0 +1,73 @@
+<html>
+    <head>
+        <title>Registration Page</title>
+        <link rel="stylesheet" href="/static/main.css" />
+        <script src="static/main.js"></script>
+    </head>
+    <body class="themeColor centerForms">
+
+        <div class="formContainer registerContainer" align=center>
+
+            <div class="mainImage centerForms">
+                <img src="/media/images/sign-up.jpg" />
+            </div>
+            <div class="mainForms centerForms">
+                <form method="post"> {% csrf_token %}
+                    
+                    <div class="formTitle">Sign Up</div>
+                    <br />
+                    <br />
+                    <div class="formText">Enter your details below to sign up</div>
+                    <br />
+                    <input type="text" class="Inputs userInput" id="name" name="name" placeholder="Enter name" required />
+                    <br />
+                    <br />
+                    <input type="number" class="Inputs contactInput" id="mobile" name="mobile" placeholder="Enter Number" pattern="\d{10}" required />
+                    <br />
+                    <br />
+                    <input type="email" class="Inputs emailInput" id="email" name="email" placeholder="Enter email" required />
+                    <br />
+                    <br />
+                    <input type="password" class="Inputs passwordInput passwordShowHide" id="password" name="password" placeholder="Enter password" required />
+                    
+                    <br />
+                    <br />
+                    <button type="submit" class="submitBtn">Sign Up</button>
+                    <br />
+                    <br />
+                    <div>
+                        <span class="actionLink">Alredy have an account</span>
+                        <a href="{% url 'Login' %}" class="actionLink">Sign in</a>
+                    </div>
+                    <br />
+                    {% if message != '' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        
+    </body>
+</html>
+
+<script>
+
+    function validation() {
+        
+        var pass1 = document.form.password1.value;
+    var pass2 = document.form.password2.value;
+
+    if(pass1 == pass2){
+        alert("Password is match");
+        return
+        }
+    else{
+        alert("Both Password is not match");
+        return 
+        }
+
+    }
+
+</script>

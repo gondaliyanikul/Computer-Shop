@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Opt Varification</title>
+        <link rel="stylesheet" href="/static/main.css" />
+    </head>
+    <body class="themeColor centerForms">
+
+        <div class="formContainer loginContainer" align=center>
+
+            <div class="mainImage centerForms">
+                <img src="/media/images/otp-verification2.jpg" />
+            </div>
+            <div class="mainForms centerForms">
+                <form method="post"> {% csrf_token %}
+                    
+                    <div class="formTitle">Opt Verification</div>
+                    <br />
+                    <br />
+                    <div class="formText">Enter your details below</div>
+                    <br />
+                    
+                    <input type="text" class="Inputs" id="otp" name="otp" pattern="\d{6}" placeholder="Enter otp" required />
+                    <br />
+                    <br />
+                    <button type="submit" class="submitBtn">Submit</button>
+                    <br />
+                    <br />
+                    <div>
+                        <a href="{% url 'Forgot' %}" class="actionLink">Back</a>
+                    </div>
+                    <br />
+                    {% if message != '' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>
